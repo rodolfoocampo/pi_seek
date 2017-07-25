@@ -1,0 +1,7 @@
+import webcamPy
+
+arr=[]
+while True:
+	arr=webcamPy.findCenter()
+	print arr[0]
+	print arr[0]
