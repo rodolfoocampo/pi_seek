@@ -77,12 +77,9 @@ print("Objetivo identificado")
 #Aqui llamamos a OpenCV
 
 arr=[]
-while True:
-	arr=webcamPy.findCenter()
-	print arr[0]
-	print arr[0]
 
-##
+arr=webcamPy.findCenter()
+
 
 msg = vehicle.message_factory.set_position_target_local_ned_encode(
     0,       # time_boot_ms (not used)
