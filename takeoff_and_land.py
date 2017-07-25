@@ -1,6 +1,7 @@
 from dronekit import connect, VehicleMode, LocationGlobalRelative
 from pymavlink import mavutil
 import time
+import webcamPy
 
 import argparse  
 parser = argparse.ArgumentParser()
@@ -74,6 +75,12 @@ time.sleep(10)
 print("Objetivo identificado")
 
 #Aqui llamamos a OpenCV
+
+arr=[]
+while True:
+	arr=webcamPy.findCenter()
+	print arr[0]
+	print arr[0]
 
 ##
 
