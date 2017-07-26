@@ -70,16 +70,25 @@ arm_and_takeoff(20)
 print("Take off complete")
 
 # Hover for 10 seconds
-time.sleep(10)
+time.sleep(2)
 
 print("Objetivo identificado")
 
 #Aqui llamamos a OpenCV
 
 arr=[]
+objEncontrado= False
+arr.append(0)
+arr.append(0)
 
-arr=webcamPy.findCenter()
+while arr[0]==0 and arr[1]==0:
+	arr=webcamPy.findCenter()
+	break
+print arr[0]
+print arr[1]
 
+#while !objEncontrado:
+	#muevete en un cuadrado que se va ampliando
 
 msg = vehicle.message_factory.set_position_target_local_ned_encode(
     0,       # time_boot_ms (not used)
@@ -95,7 +104,12 @@ vehicle.send_mavlink(msg)
 
 
 print("Moviendonos a objetivo")
-time.sleep(40)
+time.sleep(5)
+
+#baja a cierta altitud
+#abre servo
+#RTL
+
 print("Now let's land")
 vehicle.mode = VehicleMode("LAND")
 

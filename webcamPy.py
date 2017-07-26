@@ -7,26 +7,26 @@ import cv2
 
 def findCenter(): 
 	# construct the argument parse and parse the arguments
-	ap=argparse.ArgumentParser()
-	ap.add_argument("-v", "--video",help="path to the (optional) video file")
-	args = vars(ap.parse_args())
+	#ap=argparse.ArgumentParser()
+	#ap.add_argument("-v", "--video",help="path to the (optional) video file")
+	#args = vars(ap.parse_args())
 
 
 	# define the lower and upper boundaries of the "green"
 	# ball in the HSV color space, then initialize the
 	# list of tracked points
-	greenLower = (29, 86, 6)
-	greenUpper = (64, 255, 255)
+	greenLower = (75, 151, 10)
+	greenUpper = (90, 256, 256)
 
 	 
 	# if a video path was not supplied, grab the reference
 	# to the webcam
-	if not args.get("video", False):
-		camera = cv2.VideoCapture(0)
+	#if not args.get("video", False):
+	camera = cv2.VideoCapture(0)
 	 
 	# otherwise, grab a reference to the video file
-	else:
-		camera = cv2.VideoCapture(args["video"])
+	#else:
+	#camera = cv2.VideoCapture(args["video"])
 
 	# keep looping
 	while True:
@@ -38,8 +38,8 @@ def findCenter():
 	 
 		# if we are viewing a video and we did not grab a frame,
 		# then we have reached the end of the video
-		if args.get("video") and not grabbed:
-			break
+		#if args.get("video") and not grabbed:
+			#break
 	 
 		# resize the frame, blur it, and convert it to the HSV
 		# color space
@@ -71,17 +71,17 @@ def findCenter():
 			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 	 
 			# only proceed if the radius meets a minimum size
-			if radius > 100 and x!=0 and y!=0:
+			if radius > 50 and radius < 350 and x!=0 and y!=0:
 				# draw the circle and centroid on the frame,
 				# then update the list of tracked points
-				puntos[0]=(x-320)*(0.004777)
-				puntos[1]=(y-240)*(0.004328)			
-				cv2.circle(frame, (int(x), int(y)), int	(radius),(0, 255, 255), 2)
-				cv2.circle(frame, center, 5, (0, 0, 255), -1)
+				puntos[0]=(320-x)*(0.004777)
+				puntos[1]=(240-y)*(0.004328)			
+				#cv2.circle(frame, (int(x), int(y)), int	(radius),(0, 255, 255), 2)
+				#cv2.circle(frame, center, 5, (0, 0, 255), -1)
 	 			return puntos
 				break
 		# show the frame to our screen
-		cv2.imshow("Frame", frame)
+		#cv2.imshow("Frame", frame)
 		key = cv2.waitKey(1) & 0xFF
 		# if the 'q' key is pressed, stop the loop
 		if key == ord("q"):
