@@ -22,7 +22,7 @@ def findCenter():
 	# if a video path was not supplied, grab the reference
 	# to the webcam
 	#if not args.get("video", False):
-	camera = cv2.VideoCapture(0)
+	camera = cv2.VideoCapture(1)
 	 
 	# otherwise, grab a reference to the video file
 	#else:
@@ -74,7 +74,7 @@ def findCenter():
 			if radius > 50 and radius < 350 and x!=0 and y!=0:
 				# draw the circle and centroid on the frame,
 				# then update the list of tracked points
-				puntos[0]=(320-x)*(0.004777)
+				puntos[0]=x#(320-)*(0.004777)
 				puntos[1]=(240-y)*(0.004328)			
 				#cv2.circle(frame, (int(x), int(y)), int	(radius),(0, 255, 255), 2)
 				#cv2.circle(frame, center, 5, (0, 0, 255), -1)
