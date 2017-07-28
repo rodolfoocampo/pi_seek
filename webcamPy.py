@@ -2,7 +2,7 @@
 from collections import deque
 import numpy as np
 import argparse
-import imutils
+#import imutils
 import cv2
 
 def findCenter(): 
@@ -15,14 +15,14 @@ def findCenter():
 	# define the lower and upper boundaries of the "green"
 	# ball in the HSV color space, then initialize the
 	# list of tracked points
-	greenLower = (75, 151, 10)
-	greenUpper = (90, 256, 256)
+	greenLower = (147, 121, 0)
+	greenUpper = (256, 256, 256)
 
 	 
 	# if a video path was not supplied, grab the reference
 	# to the webcam
 	#if not args.get("video", False):
-	camera = cv2.VideoCapture(1)
+	camera = cv2.VideoCapture(0)
 	 
 	# otherwise, grab a reference to the video file
 	#else:
@@ -34,7 +34,8 @@ def findCenter():
 		puntos.append(0)
 		puntos.append(0)	
 		# grab the current frame
-		(grabbed, frame) = camera.read()
+		(grabbed, frame) = camera.read(0)
+		
 	 
 		# if we are viewing a video and we did not grab a frame,
 		# then we have reached the end of the video
@@ -43,9 +44,9 @@ def findCenter():
 	 
 		# resize the frame, blur it, and convert it to the HSV
 		# color space
-		frame = imutils.resize(frame, width=640)
+#		frame = imutils.resize(frame, width=640)
 		blurred = cv2.GaussianBlur(frame, (11, 11), 0)
-		hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+		hsv=cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
 	 
 		# construct a mask for the color "green", then perform
 		# a series of dilations and erosions to remove any small
@@ -74,7 +75,7 @@ def findCenter():
 			if radius > 50 and radius < 350 and x!=0 and y!=0:
 				# draw the circle and centroid on the frame,
 				# then update the list of tracked points
-				puntos[0]=x#(320-)*(0.004777)
+				puntos[0]=(320-x)*(0.004777)
 				puntos[1]=(240-y)*(0.004328)			
 				#cv2.circle(frame, (int(x), int(y)), int	(radius),(0, 255, 255), 2)
 				#cv2.circle(frame, center, 5, (0, 0, 255), -1)

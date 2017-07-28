@@ -3,6 +3,7 @@ from pymavlink import mavutil
 import time
 import math
 import webcamPy
+import servo
 
 import argparse  
 parser = argparse.ArgumentParser()
@@ -15,13 +16,7 @@ vehicle = connect(args.connect, baud=57600, wait_ready=True)
 
 def goto(dNorth, dEast):
     """
-    Moves the vehicle to a position dNorth metres North and dEast metres East of the current position.
-
-    The method takes a function pointer argument with a single `dronekit.lib.LocationGlobal` parameter for 
-    the target position. This allows it to be called with different position-setting commands. 
-    By default it uses the standard method: dronekit.lib.Vehicle.simple_goto().
-
-    The method reports the distance to target every two seconds.
+  
     """
     
     currentLocation = vehicle.location.global_relative_frame
@@ -36,7 +31,7 @@ def goto(dNorth, dEast):
         #print "DEBUG: mode: %s" % vehicle.mode.name
         remainingDistance=get_distance_metres(vehicle.location.global_relative_frame, targetLocation)
         print "Distance to target: ", remainingDistance
-        if remainingDistance<=targetDistance*0.01: #Just below target, in case of undershoot.
+        if remainingDistance<=0.3: #Just below target, in case of undershoot.
             print "Reached target"
             break;
         time.sleep(2)
@@ -103,9 +98,11 @@ def arm_and_takeoff(aTargetAltitude):
 
   print "Basic pre-arm checks"
   # Don't let the user try to arm until autopilot is ready
-  while not vehicle.is_armable:
-    print " Waiting for vehicle to initialise..."
-    time.sleep(1)
+ # while not vehicle.is_armable:
+  #  print " Waiting for vehicle to initialise..."
+   # time.sleep(1)
+
+  # desactiva chequeo de gps
         
   print "Arming motors"
   # Copter should arm in GUIDED mode
@@ -131,15 +128,38 @@ def arm_and_takeoff(aTargetAltitude):
 #Set home as the actual position
 #vehicle.home_location=vehicle.location.global_frame
 
-# Initialize the takeoff sequence to 20m
-arm_and_takeoff(20)
+# Imprimir estados del vehiculo
+
+print "Autopilot Firmware version: %s" % vehicle.version
+print "Autopilot capabilities (supports ftp): %s" % vehicle.capabilities.ftp
+print "Global Location: %s" % vehicle.location.global_frame
+print "Global Location (relative altitude): %s" % vehicle.location.global_relative_frame
+print "Local Location: %s" % vehicle.location.local_frame    #NED
+print "Attitude: %s" % vehicle.attitude
+print "Velocity: %s" % vehicle.velocity
+print "GPS: %s" % vehicle.gps_0
+print "Groundspeed: %s" % vehicle.groundspeed
+print "Airspeed: %s" % vehicle.airspeed
+print "Gimbal status: %s" % vehicle.gimbal
+print "Battery: %s" % vehicle.battery
+print "EKF OK?: %s" % vehicle.ekf_ok
+print "Last Heartbeat: %s" % vehicle.last_heartbeat
+print "Rangefinder: %s" % vehicle.rangefinder
+print "Rangefinder distance: %s" % vehicle.rangefinder.distance
+print "Rangefinder voltage: %s" % vehicle.rangefinder.voltage
+print "Heading: %s" % vehicle.heading
+print "Is Armable?: %s" % vehicle.is_armable
+print "System status: %s" % vehicle.system_status.state
+print "Mode: %s" % vehicle.mode.name    # settable
+print "Armed: %s" % vehicle.armed  
+
+# Initialize the takeoff sequence to 5m
+arm_and_takeoff(5)
 
 print("Take off complete")
 
 # Hover for 2 seconds
-time.sleep(2)
-
-print("Objetivo identificado")
+time.sleep(5)
 
 #Aqui llamamos a OpenCV
 
@@ -148,47 +168,53 @@ objEncontrado= False
 arr.append(0)
 arr.append(0)
 
-while arr[0]==0 and arr[1]==0:
-	arr=webcamPy.findCenter()
-	break
-print arr[0]
-print arr[1]
+#while arr[0]==0 and arr[1]==0:
+#	arr=webcamPy.findCenter()
+#	break
+#print arr[0]
+#print arr[1]
+
+#print("Objeto identificado")
 
 #while !objEncontrado:
-	#muevete en un cuadrado que se va ampliando
-x=arr[0]
-y=arr[1]
 
-goto(y,x)
+	#muevete en un cuadrado que se va ampliando
+
+#x=arr[0]
+#y=arr[1]
+
+print("Destino fijado")
+
+#vehicle.airspeed = 3
 #vehicle.send_mavlink(msg)
 
+point1 = LocationGlobalRelative(19.345270,-99.201072,5)
+vehicle.simple_goto(point1)
 
+print("Objectivo alcanzado")
 #print("Moviendonos a objetivo")
-time.sleep(10)
+
 #coordenadas=vehicle.location.global_relative_frame
 
 #baja a cierta altitud
-baja = LocationGlobalRelative(vehicle.location.global_relative_frame.lat, vehicle.location.global_relative_frame.lon, 3)
+print("Bajando entrega")
+#baja = LocationGlobalRelative(vehicle.location.global_relative_frame.lat, vehicle.location.global_relative_frame.lon, 3)
 
-vehicle.simple_goto(baja)
+#vehicle.simple_goto(baja)
 
-time.sleep(10)
+servo.abre()
+print("Servo abierto")
 
 #abre servo
 #RTL
-sube = LocationGlobalRelative(vehicle.location.global_relative_frame.lat, vehicle.location.global_relative_frame.lon, 20)
+#sube = LocationGlobalRelative(vehicle.location.global_relative_frame.lat, vehicle.location.global_relative_frame.lon, 5)
 
-vehicle.simple_goto(sube)
+#vehicle.simple_goto(sube)
 
-time.sleep(10)
-
-print("Regresando a casa")
-vehicle.mode    = VehicleMode("RTL")
-
-time.sleep(10)
+#time.sleep(10)
 
 print("Now let's land")
-#vehicle.mode = VehicleMode("LAND")
+vehicle.mode = VehicleMode("LAND")
 
 # Close vehicle object
 vehicle.close()
